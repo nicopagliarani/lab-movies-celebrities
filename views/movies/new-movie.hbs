@@ -1,0 +1,39 @@
+<h2>New Movie</h2>
+<form action="/movies/create" method="post">
+<label for="title">Movie Title:</label>
+
+   <input
+    type="text"
+    name="title"
+    id="title"
+    value=""
+    placeholder="Title of the Movie"
+  />
+  <label for="genre">Movie Genre:</label>
+
+   <input
+    type="text"
+    name="genre"
+    id="genre"
+    value=""
+    placeholder="Genre of the Celebrity"
+  />
+  <label for="plot">Plot of the movie</label>
+   <input
+    type="text"
+    name="plot"
+    id="plot"
+    value=""
+    placeholder="Plot of the movie"
+  />
+  
+  <label for="cars">Choose a car:</label>
+
+<select name="cars" id="cars" multiple>
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="opel">Opel</option>
+  <option value="audi">Audi</option>
+</select>
+  <button type="submit">Create the Movie!</button>
+</form>
