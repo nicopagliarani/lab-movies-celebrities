@@ -11,22 +11,61 @@ router.get("/movies", async (req, res) => {
   const allmovies = await Movie.find();
   res.render("movies/movies.hbs", { allmovies });
 });
-router.get("/movies/create", (req, res) => {
-    res.render("movies/new-movie");
+router.get("/movies/create",async (req, res) => {
+  const celebrities = await Celebrity.find();
+    res.render("movies/new-movie",{ celebrities });
   });
   router.post("/movies/create", async (req, res) => {
     // console.log(req.body);
     try {
-      const userCreatedCelebrity = new Celebrity({
-        title: req.body.title,
-        genre: req.body.genre,
-        plot: req.body.plot,
-      });
-      await userCreatedCelebrity.save();
-    res.redirect("/celebrities");
-  } catch(err) {
+      const newMovie = new Movie({ ...req.body });
+      await newMovie.save();
+      res.redirect("/movies");
+    } catch (err) {
+      console.error(err);
+      res.redirect("/movies/create");
+    }
+  });
+module.exports = router;
+
+router.get("/movies/:id", async (req, res) => {
+  try {
+    const movieId = mongoose.Types.ObjectId(req.params.id);
+    const movie = await Movie.findById(movieId);
+    await movie.populate("cast");
+    res.render("movies/movie-details.hbs", { movie });
+  } catch (err) {
     console.error(err);
-    res.render("celebrities/new-celebrity");
   }
 });
-module.exports = router;
+
+router.post("/movies/:id/delete", async (req, res) => {
+  try {
+    const movieId = mongoose.Types.ObjectId(req.params.id);
+    await Movie.findByIdAndRemove(movieId);
+    res.redirect("/movies");
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+router.get("/movies/:id/edit", async (req, res) => {
+  try {
+    const movieId = mongoose.Types.ObjectId(req.params.id);
+    const movie = await Movie.findById(movieId);
+    const celebrities = await Celebrity.find();
+    res.render("movies/edit-movie.hbs", { movie, celebrities });
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+router.post("/movies/:id/edit", async (req, res) => {
+  try {
+    const movieId = mongoose.Types.ObjectId(req.params.id);
+    await Movie.findByIdAndUpdate(movieId, { ...req.body });
+    res.redirect("/movies");
+  } catch (err) {
+    console.error(err);
+  }
+});
